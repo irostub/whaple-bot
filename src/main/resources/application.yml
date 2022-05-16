@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernateddl-auto: create
+    open-in-view: true
+
+app:
+  bot:
+#    token: 5396676951:AAGQctuD70adu_cxO_anXgGaa7_ObZ2qgIM
+    token: 5374592710:AAFSjaFP87nSsVmqQCtsOXGnJQpKyfQABg0
+    botUsername: '@whaple_test_bot'
+#    botUsername: '@whaple_bot'
+    prefix:
+      - '/'
+      - ','
+      - ','
