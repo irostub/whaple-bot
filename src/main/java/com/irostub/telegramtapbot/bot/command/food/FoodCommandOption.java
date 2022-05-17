@@ -11,8 +11,7 @@ import java.util.List;
 public enum FoodCommandOption {
     CREATE("등록", "추가", "add", "create", "new", "register", "a", "c", "ㄷㄹ", "ㅊㄱ"),
     DELETE("삭제", "제거", "remove", "delete", "d", "r", "ㅅㅈ", "ㅈㄱ"),
-    UPDATE("업뎃", "수정", "update", "u", "ㅇㄷ", "ㅅㅈ"),
-    READ();
+    READ("");
 
     private final List<String> properties;
 
@@ -21,11 +20,6 @@ public enum FoodCommandOption {
     }
 
     public static FoodCommandOption ofProperty(String option) {
-        //option 없는 경우 read limit 1
-        if (option.isEmpty()) {
-            return FoodCommandOption.READ;
-        }
-
         try {
             //option 이 수로 변환 가능한 경우 read limit long
             Long.parseLong(option);

@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public interface FoodService {
-    void run(Update update, AbsSender absSender, String pureCommand);
+    void run(Update update, AbsSender absSender, String options);
 
     FoodCommandOption getFoodCommandOption();
 //    {

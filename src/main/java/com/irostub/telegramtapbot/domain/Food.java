@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.persistence.*;
 
 @Entity @Getter
-public class Food {
+public class Food extends BaseUserEntity {
     @Id
     @GeneratedValue
     private Long id;

@@ -1,5 +1,7 @@
 package com.irostub.telegramtapbot.bot.command.food;
 
+import com.irostub.telegramtapbot.bot.UserInfoHolder;
+import com.irostub.telegramtapbot.bot.command.utils.ApiUtils;
 import com.irostub.telegramtapbot.domain.Food;
 import com.irostub.telegramtapbot.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +33,14 @@ public class ReadFoodService implements FoodService{
     }
 
     @Override
-    public void run(Update update, AbsSender absSender, String pureCommand) {
+    public void run(Update update, AbsSender absSender, String options) {
         List<String> randomFoodList;
-
-        if(pureCommand.isEmpty()){
+        if(options.isEmpty()){
              randomFoodList = getRandomFoodList(1).stream()
                      .map(Food::getName)
                      .collect(Collectors.toList());
         }else{
-            randomFoodList = getRandomFoodList(Long.parseLong(pureCommand)).stream()
+            randomFoodList = getRandomFoodList(Long.parseLong(options)).stream()
                     .map(Food::getName)
                     .collect(Collectors.toList());
         }
@@ -47,14 +48,14 @@ public class ReadFoodService implements FoodService{
         MessageEntity messageEntity = MessageEntity.builder()
                 .type("text_mention")
                 .offset(0)
-                .length(getTextUsername(update).length())
+                .length(ApiUtils.getTextUsername(update).length())
                 .user(update.getMessage().getFrom())
                 .build();
 
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(update.getMessage().getChatId().toString())
                 .entities(List.of(messageEntity))
-                .text(getTextUsername(update) + "\n오늘의 밥은\n"+
+                .text(ApiUtils.getTextUsername(update) + "\n오늘의 밥은\n"+
                         String.join(", ", randomFoodList)+"!!")
                 .build();
 
@@ -63,22 +64,5 @@ public class ReadFoodService implements FoodService{
         } catch (TelegramApiException e) {
             log.error("ex = ",e);
         }
-    }
-
-    private String getTextUsername(Update update) {
-        return getFirstName(update) + getLastName(update);
-    }
-
-    private String getLastName(Update update) {
-        String lastName = update.getMessage().getFrom().getLastName();
-        if(StringUtils.hasText(lastName)){
-            return lastName;
-        }else{
-            return "";
-        }
-    }
-
-    private String getFirstName(Update update) {
-        return update.getMessage().getFrom().getFirstName();
     }
 }

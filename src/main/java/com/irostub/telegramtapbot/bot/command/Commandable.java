@@ -5,9 +5,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public interface Commandable {
-    void execute(Update update, @NotNull AbsSender absSender, String option);
+    default void run(Update update, @NotNull AbsSender absSender, String optionString) {
+        List<String> options = separateOptions(optionString);
+        execute(update, absSender, options);
+    }
+
+    void execute(Update update, @NotNull AbsSender absSender, List<String> optionList);
 
     CommandType getCommandType();
 
@@ -15,10 +21,5 @@ public interface Commandable {
         return update.getMessage().getChatId().toString();
     }
 
-    default String separateInnerCommandPrefix(String pureCommand) {
-        if (pureCommand.contains(" ")) {
-            return StringUtils.substringAfter(pureCommand, " ").strip();
-        }
-        return "";
-    }
+    List<String> separateOptions(String options);
 }

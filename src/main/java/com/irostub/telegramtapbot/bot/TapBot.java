@@ -53,7 +53,8 @@ public class TapBot extends TelegramLongPollingBot {
         if (withoutPrefix == null) {
             return;
         }
-
+        UserInfoHolder userInfoHolder = new UserInfoHolder();
+        userInfoHolder.setUserId(update.getMessage().getFrom().getId().toString());
         //커맨드 게이트웨이에게 전달
         commandGateway.route(new RouteObjectDto(update, this, withoutPrefix));
     }
