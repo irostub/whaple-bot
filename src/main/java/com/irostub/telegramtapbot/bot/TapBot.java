@@ -1,13 +1,20 @@
 package com.irostub.telegramtapbot.bot;
 
 import com.irostub.telegramtapbot.AppProperties;
-import com.irostub.telegramtapbot.bot.command.router.CommandGateway;
-import com.irostub.telegramtapbot.bot.command.router.RouteObjectDto;
+import com.irostub.telegramtapbot.bot.command.complex.CommandGateway;
+import com.irostub.telegramtapbot.bot.command.complex.CommandType;
+import com.irostub.telegramtapbot.config.UserInfoHolder;
+import com.irostub.telegramtapbot.domain.Account;
+import com.irostub.telegramtapbot.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,6 +23,7 @@ public class TapBot extends TelegramLongPollingBot {
 
     private final AppProperties properties;
     private final CommandGateway commandGateway;
+    private final AccountRepository accountRepository;
 
     //봇 초기화 [봇 토큰]
     @Override
@@ -31,54 +39,74 @@ public class TapBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        //개인, 그룹에서의 메세지가 아닐 경우
-        if (!isMessageUpdate(update)) {
+        if (isGroupOrUserMessage(update) == false) {
             return;
         }
 
         String rawMessage = update.getMessage().getText();
-        String outerPrefix = separateOuterPrefix(rawMessage);
-
-        //봇 prefix 가 없는 경우
-        if (outerPrefix == null) {
+        if(containsWhapleBotPrefix(rawMessage) == false &&
+                isPureCommand(rawMessage) == false){
             return;
         }
-        log.info("[TapBot][onUpdateReceived] received message = {}, user = {}",
-                rawMessage,
-                update.getMessage().getFrom().toString());
 
-        String withoutPrefix = getMessageWithoutPrefix(rawMessage, outerPrefix.length());
-
-        //봇 명령줄이 없는 경우
-        if (withoutPrefix == null) {
-            return;
-        }
+        User user = update.getMessage().getFrom();
         UserInfoHolder userInfoHolder = new UserInfoHolder();
-        userInfoHolder.setUserId(update.getMessage().getFrom().getId().toString());
-        //커맨드 게이트웨이에게 전달
-        commandGateway.route(new RouteObjectDto(update, this, withoutPrefix));
+        userInfoHolder.setUser(user);
+
+        createAccountIfNotExists(user);
+
+        log.info("[TapBot][onUpdateReceived] received message = {}, user = {}", rawMessage, update.getMessage().getFrom().toString());
+
+        String message = rawMessage;
+
+        if(isPureCommand(rawMessage) == false){
+            message= separateBotPrefix(rawMessage);
+        }
+
+        commandGateway.route(message, update, this);
+    }
+
+    private void createAccountIfNotExists(User user) {
+        if(existsAccount(user) == false){
+            Account account = Account.create(user.getId(), user.getFirstName(), user.getLastName(), user.getUserName());
+            accountRepository.saveAndFlush(account);
+        }
+    }
+
+    private boolean existsAccount(User user) {
+        return accountRepository.existsById(user.getId());
+    }
+
+    private String separateBotPrefix(String rawMessage) {
+        return rawMessage.substring(1);
+    }
+
+    private boolean isPureCommand(String rawMessage) {
+        String stripedMessage = rawMessage.strip();
+        if(stripedMessage.contains(" ")){
+            String[] split = StringUtils.split(stripedMessage, " ", 2);
+            return CommandType.contains(split[0]);
+        }else{
+            return CommandType.contains(stripedMessage);
+        }
+    }
+
+    private boolean containsWhapleBotPrefix(String rawMessage) {
+        return properties.getBot().getPrefix().contains(rawMessage.substring(0, 1));
     }
 
     @Override
     public void onRegister() {
         super.onRegister();
-        log.debug("register this bot");
+
+        log.info("register this bot");
     }
 
-    private String separateOuterPrefix(String message) {
-        return properties.getBot().getPrefix().stream()
-                .parallel()
-                .filter(prefix -> message.strip().startsWith(prefix))
-                .findAny()
-                .orElse(null);
-    }
-
-    private String getMessageWithoutPrefix(String message, int prefixLength){
-        return message.substring(prefixLength).strip();
-    }
-
-    private boolean isMessageUpdate(Update update) {
-        return update.hasMessage() && (update.getMessage().isGroupMessage() || update.getMessage().isUserMessage());
+    private boolean isGroupOrUserMessage(Update update) {
+        Message message = update.getMessage();
+        return update.hasMessage() &&
+                (message.isGroupMessage() || message.isUserMessage() || message.isSuperGroupMessage()) &&
+                message.getFrom().getIsBot() == false;
     }
 }
 
@@ -130,6 +158,16 @@ public class TapBot extends TelegramLongPollingBot {
  } catch (TelegramApiException e) {
  e.printStackTrace();
  }**/
+
+/*UserProfilePhotos userProfilePhotos = null;
+        try {
+                userProfilePhotos = this.sendApiMethod(GetUserProfilePhotos.builder()
+                .userId(Long.parseLong(userId))
+                .limit(1)
+                .build());
+                } catch (TelegramApiException e) {
+                e.printStackTrace();
+                }*/
 
 
 /**

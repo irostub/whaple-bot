@@ -1,6 +1,5 @@
 package com.irostub.telegramtapbot.config;
 
-import com.irostub.telegramtapbot.bot.UserInfoHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,7 @@ public class AuditorConfig {
     public AuditorAware<String> auditorProvider() {
         return () -> {
             UserInfoHolder userInfoHolder = new UserInfoHolder();
-            return Optional.of(userInfoHolder.getUserId());
+            return Optional.of(userInfoHolder.getUser().getId().toString());
         };
     }
 }

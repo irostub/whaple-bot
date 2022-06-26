@@ -1,28 +1,26 @@
 package com.irostub.telegramtapbot.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity @Getter
-public class Food extends BaseUserEntity {
-    @Id
-    @GeneratedValue
+@Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+public class Food{
+    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    private String url;
+    @Enumerated(EnumType.STRING)
+    private FoodType foodType;
 
-    //나중에 필요하면 넣자
-    //@Enumerated(EnumType.STRING)
-    //private FoodType foodType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Restaurant restaurant;
 
-    protected Food() {}
-
-    public static Food createFood(String name) {
-        Food food = new Food();
-        food.name = name;
-        return food;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }
