@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Getter @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -16,6 +17,7 @@ public class Account {
     private String firstName;
     private String lastName;
     private String username;
+    private LocalDate birthday;
 
     public static Account create(Long id,String firstName, String lastName, String username) {
         Account account = new Account();

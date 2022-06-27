@@ -15,6 +15,8 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
     private Bot bot;
+    private PublicApi publicApi;
+    private Naver naver;
 
     @Getter @Setter
     public static class Bot{
@@ -22,4 +24,28 @@ public class AppProperties {
         private String botUsername;
         private Set<String> prefix = new HashSet<>();
     }
+
+    @Getter @Setter
+    public static class PublicApi{
+        private Weather weather;
+
+        @Getter @Setter
+        public static class Weather{
+            private String url;
+            private String token;
+        }
+    }
+
+    @Getter @Setter
+    public static class Naver{
+        private Geo geo;
+
+        @Getter @Setter
+        public static class Geo{
+            private String url;
+            private String token;
+        }
+    }
+
+
 }

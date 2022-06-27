@@ -5,7 +5,11 @@ import java.util.List;
 
 public enum CommandType {
     NONE(""),
-    RESTAURANT("밥", "ㅂ", "ㅇㅈㅁ", "오점뭐");
+    RESTAURANT("밥", "ㅂ", "ㅇㅈㅁ", "오점뭐"),
+    HELP("?", "도움말", "도움", "ㄷㅇ", "help", "h"),
+    BIRTHDAY("생일", "ㅅㅇ", "birth"),
+    CORONA("코로나", "ㅋㄹㄴ"),
+    RPS("가위바위보", "ㄱㅂㅂ", "rps");
 
     private final List<String> properties;
 
