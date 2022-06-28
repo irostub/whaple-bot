@@ -38,8 +38,7 @@ public class WeatherService {
                 .queryParam("ny", ny);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
-
+        ResponseEntity<WeatherResponse> exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, WeatherResponse.class);
         log.info("ResponseEntity: " + exchange.getBody());
     }
 }
