@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class WeatherServiceTest {
+class PublicApiWeatherServiceTest {
     @Test
     @DisplayName("date")
     void dateTest() {

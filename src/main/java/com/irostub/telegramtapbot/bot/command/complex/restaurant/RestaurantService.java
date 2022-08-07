@@ -162,8 +162,16 @@ public class RestaurantService implements Commandable {
 
         if (ParseUtils.canParseInteger(command)) {
             return RestaurantSubCommand.RECOMMEND.getProperties().get(0) + " " + command;
+        }else if(ParseUtils.canParseInteger(command) == false){
+            if(command.split(" ").length == 1){
+                RestaurantSubCommand subCommand = getSubCommand(command);
+                if(subCommand.equals(RestaurantSubCommand.RECOMMEND)){
+                    return subCommand.getProperties().get(0) + " 1";
+                } else if (subCommand.equals(RestaurantSubCommand.HELP)) {
+                    return command;
+                }
+            }
         }
-
         return command;
     }
 

@@ -9,7 +9,8 @@ public enum CommandType {
     HELP("?", "도움말", "도움", "ㄷㅇ", "help", "h"),
     BIRTHDAY("생일", "ㅅㅇ", "birth"),
     CORONA("코로나", "ㅋㄹㄴ"),
-    RPS("가위바위보", "ㄱㅂㅂ", "rps");
+    RPS("가위바위보", "ㄱㅂㅂ", "rps"),
+    HANGANG("한강", "ㅎㄱ", "temp");
 
     private final List<String> properties;
 

@@ -3,8 +3,7 @@ package com.irostub.telegramtapbot.bot.command.complex.birthday;
 import com.irostub.telegramtapbot.bot.command.complex.CommandGatewayPack;
 import com.irostub.telegramtapbot.bot.command.complex.CommandType;
 import com.irostub.telegramtapbot.bot.command.complex.Commandable;
-import com.irostub.telegramtapbot.bot.command.complex.restaurant.RestaurantSubCommand;
-import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.WeatherService;
+import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.PublicApiWeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class BirthdayService implements Commandable {
-    private final WeatherService weatherService;
+    private final PublicApiWeatherService publicApiWeatherService;
 
     enum BirthdaySubCommand{
         CREATE("등록","ㄷㄹ","추가","ㅊㄱ"),
@@ -44,11 +43,11 @@ public class BirthdayService implements Commandable {
 
     @Override
     public void execute(CommandGatewayPack pack) {
-        weatherService.sendCurrentWeatherRequest("55","127");
+        publicApiWeatherService.sendCurrentWeatherRequest("55","127");
     }
 
     @Override
     public CommandType getSupports() {
-        return null;
+        return CommandType.BIRTHDAY;
     }
 }

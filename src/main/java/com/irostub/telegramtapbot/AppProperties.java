@@ -28,6 +28,16 @@ public class AppProperties {
     @Getter @Setter
     public static class PublicApi{
         private Weather weather;
+        private Hangang hangang;
+
+        @Getter @Setter
+        public static class Hangang{
+            private String pageNumber;
+            private String responseType;
+            private String serviceType;
+            private String url;
+            private String token;
+        }
 
         @Getter @Setter
         public static class Weather{

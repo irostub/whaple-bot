@@ -1,4 +1,4 @@
-package com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi;
+package com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,10 +8,9 @@ import lombok.Data;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherResponse {
-    Map<Category, FixedShortTermWeatherData> fixedWeatherDataMap = new HashMap<>();
+    private Map<Category, FixedShortTermWeatherData> fixedWeatherDataMap = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     @JsonProperty("response")
