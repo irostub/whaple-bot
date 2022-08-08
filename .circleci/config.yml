@@ -38,6 +38,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
+            ls ./circleci/
 #            ssh ${SSH_USER}@${SSH_HOST} ${PROD_PATH}/launch.sh
 
 # Invoke jobs via workflows
