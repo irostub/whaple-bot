@@ -1,6 +1,6 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 # See: https://circleci.com/docs/2.0/configuration-reference
-version: 2
+version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -31,13 +31,15 @@ jobs:
 
       - run:
           name: ahello
-          command: |
-          scp ./telegrem-tap-bot/target/telegram-tap-bot-0.0.1.jar ${USER}@${SERVER}:${PATH}/telegram-tap-bot-0.0.1.jar
+          command:
+            |
+            scp ./telegrem-tap-bot/target/telegram-tap-bot-0.0.1.jar ${USER}@${SERVER}:${PATH}/telegram-tap-bot-0.0.1.jar
 
       - run:
           name: hello
-          command: |
-          ssh ${USER}@${SERVER} ${PATH}/lauch.sh
+          command:
+            |
+            ssh ${USER}@${SERVER} ${PATH}/lauch.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
