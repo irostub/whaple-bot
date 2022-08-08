@@ -22,7 +22,7 @@ jobs:
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
-  deploy:
+  ddeploy:
     machine: true
     steps:
       - add_ssh_keys:
@@ -38,8 +38,8 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build-and-test
-      - deploy:
+        - build-and-test
+      - ddeploy:
           requires:
           - build-and-test
           filters:
