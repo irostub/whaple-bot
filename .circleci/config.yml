@@ -22,17 +22,6 @@ jobs:
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
-      - run:
-          name: ahello
-          command:
-            |
-            scp ./telegrem-tap-bot/target/telegram-tap-bot-0.0.1.jar ${USER}@${SERVER}:${PATH}/telegram-tap-bot-0.0.1.jar
-
-      - run:
-          name: hello
-          command:
-            |
-            ssh ${USER}@${SERVER} ${PATH}/lauch.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
