@@ -29,7 +29,8 @@ jobs:
           fingerprints:
             - "82:18:75:92:9b:a7:d6:d5:82:b1:9c:32:2b:5a:be:e5"
 
-      - run: scp ./telegrem-tap-bot/target/telegram-tap-bot-0.0.1.jar ${USER}@${SERVER}:${PATH}/telegram-tap-bot-0.0.1.jar
+      - run: |
+        scp ./telegrem-tap-bot/target/telegram-tap-bot-0.0.1.jar ${USER}@${SERVER}:${PATH}/telegram-tap-bot-0.0.1.jar
       - run: |
         ssh ${USER}@${SERVER} ${PATH}/lauch.sh
 
