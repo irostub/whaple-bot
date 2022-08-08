@@ -23,6 +23,7 @@ jobs:
           name: Build
           command: mvn -B -DskipTests clean package
   deploy:
+    machine: true
     steps:
       - add_ssh_keys:
           fingerprints:
