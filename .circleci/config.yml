@@ -23,7 +23,8 @@ jobs:
           name: Build
           command: mvn -B -DskipTests clean package
   ddeploy:
-    machine: true
+    docker:
+      - image: cimg/openjdk:11.0-browsers
     steps:
       - add_ssh_keys:
           fingerprints:
