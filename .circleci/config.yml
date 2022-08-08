@@ -18,6 +18,7 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
+      working_directory: ~
       # Use mvn clean and package as the standard maven build phase###
       - run:
           name: Build
@@ -32,11 +33,11 @@ jobs:
       - run:
           name: Deploy Over SCP
           command: |
-            ls -al
-#            scp ./telegram-tap-bot/target/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}/telegram-tap-bot-0.0.1.jar
-#      - run:
-#          name: Deploy Over SSH
-#          command: |
+             ls -al
+#            scp ~/project/target/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}
+      - run:
+          name: Deploy Over SSH
+          command: |
 #            ssh ${SSH_USER}@${SSH_HOST} ${PROD_PATH}/launch.sh
 
 # Invoke jobs via workflows
