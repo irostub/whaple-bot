@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,13 +18,18 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class TapBot extends TelegramLongPollingBot {
-
     private final AppProperties properties;
     private final CommandGateway commandGateway;
     private final AccountRepository accountRepository;
+
+    public TapBot(DefaultBotOptions options ,AppProperties properties, CommandGateway commandGateway, AccountRepository accountRepository) {
+        super(options);
+        this.properties = properties;
+        this.commandGateway = commandGateway;
+        this.accountRepository = accountRepository;
+    }
 
     //봇 초기화 [봇 토큰]
     @Override

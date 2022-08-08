@@ -90,7 +90,6 @@ public class WeatherResponse {
                 case WSD:
                     this.obsrValue = obsrValue + " m/s";
                     break;
-
             }
         }
     }
@@ -101,8 +100,6 @@ public class WeatherResponse {
         private String baseTime;
         private Category category;
         private String obsrValue;
-
-
     }
 
     public enum Category {
@@ -113,7 +110,7 @@ public class WeatherResponse {
         REH,    //습도
         PTY,    //강수형태
         VEC,    //풍향
-        WSD;     //풍속
+        WSD;    //풍속
 
         @JsonCreator
         public static Category jsonCreator(String value) {
