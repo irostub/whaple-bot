@@ -30,9 +30,13 @@ jobs:
           fingerprints:
             - "82:18:75:92:9b:a7:d6:d5:82:b1:9c:32:2b:5a:be:e5"
       - run:
+          name: Deploy Over SCP
+          command: |
+            scp ./telegram-tap-bot/target/telegram-tap-bot-0.0.1.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}
+      - run:
           name: Deploy Over SSH
           command: |
-            ssh ${SSH_USER}@${SSH_HOST}
+            ssh ${SSH_USER}@${SSH_HOST} ${PROD_PATH}/launch.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
