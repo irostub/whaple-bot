@@ -24,11 +24,12 @@ jobs:
           command: mvn -B -DskipTests clean package
 
   ddeploy:
-    machine: true
+    machine:
+      enabled: true
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "82:18:75:92:9b:a7:d6:d5:82:b1:9c:32:2b:5a:be:e5"
+#      - add_ssh_keys:
+#          fingerprints:
+#            - "82:18:75:92:9b:a7:d6:d5:82:b1:9c:32:2b:5a:be:e5"
 
       - run: cat /home/circleci/.ssh/config
       - run:
