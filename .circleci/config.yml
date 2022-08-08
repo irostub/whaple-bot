@@ -36,10 +36,10 @@ jobs:
           command: |
              ls ../
 #            scp ~/project/target/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}
-#      - run:
-#          name: Deploy Over SSH
-#          command: |
-#            ls ./circleci/
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ls /home/circleci/project/target
 #            ssh ${SSH_USER}@${SSH_HOST} ${PROD_PATH}/launch.sh
 
 # Invoke jobs via workflows
