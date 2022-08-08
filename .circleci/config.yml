@@ -24,8 +24,7 @@ jobs:
           command: mvn -B -DskipTests clean package
 
   ddeploy:
-    machine:
-      enabled: true
+    machine: true
     steps:
 #      - add_ssh_keys:
 #          fingerprints:
