@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Deploy Over SCP
           command: |
-            scp ~/project/target/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}/telegram-tap-bot-0.0.1.jar
+            scp ./telegram-tap-bot/target/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}/telegram-tap-bot-0.0.1.jar
       - run:
           name: Deploy Over SSH
           command: |
