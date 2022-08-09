@@ -1,5 +1,6 @@
 package com.irostub.telegramtapbot;
 
+import com.irostub.telegramtapbot.utils.YamlPropertySourceFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @PropertySources({
-        @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true)
+        @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true , factory = YamlPropertySourceFactory.class)
 })
 @Configuration
 @ConfigurationProperties(prefix = "app")
