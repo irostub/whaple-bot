@@ -23,9 +23,8 @@ jobs:
       - run:
           name: Build
           command: mvn -B -DskipTests clean install
-      # Then run your tests!
-      - store_artifacts:
-          path: ~/telegram-tap-bot-0.0.1-SNAPSHOT.jar
+      - run: ls -al ~/
+      - run: ls -al ~/tmp/
   deploy:
     machine: true
     steps:
