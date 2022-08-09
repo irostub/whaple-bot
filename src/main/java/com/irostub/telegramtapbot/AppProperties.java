@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -11,6 +13,9 @@ import java.util.Set;
 
 @Getter
 @Setter(value= AccessLevel.PACKAGE)
+@PropertySources({
+        @PropertySource(value="file:${user.home}/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true)
+})
 @Component
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
