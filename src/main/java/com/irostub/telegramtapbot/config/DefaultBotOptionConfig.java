@@ -10,7 +10,7 @@ public class DefaultBotOptionConfig {
     public DefaultBotOptions defaultBotOptions() {
         DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
         defaultBotOptions.setProxyHost("whaple.iro.ooo");
-        defaultBotOptions.setProxyPort(50204);
+        defaultBotOptions.setProxyPort(80);
         defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
         return defaultBotOptions;
     }
