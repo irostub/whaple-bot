@@ -2,12 +2,14 @@ package com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.hangang;
 
 import com.irostub.telegramtapbot.AppProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
 @RequiredArgsConstructor
+@AutoConfigureAfter
 @Service
 public class PublicApiHangangService {
     private final AppProperties appProperties;
