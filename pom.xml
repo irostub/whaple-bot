@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.irostub</groupId>
     <artifactId>telegram-tap-bot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>telegram-tap-bot</name>
     <description>telegram-tap-bot</description>
     <properties>
