@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-@Setter(value= AccessLevel.PACKAGE)
+@Setter
 @Profile({"prod","local"})
 @PropertySources({
         @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true)
