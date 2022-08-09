@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Deploy Over SCP
           command: |
-            scp ~/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}
+            scp -o StrictHostKeyChecking=no ~/telegram-tap-bot-0.0.1-SNAPSHOT.jar ${SSH_USER}@${SSH_HOST}:${PROD_PATH}
 #             ls
       - run:
           name: Deploy Over SSH
