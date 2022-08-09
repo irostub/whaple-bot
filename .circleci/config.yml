@@ -23,8 +23,7 @@ jobs:
       - run:
           name: Build
           command: mvn -B -DskipTests clean install
-      - run: ls -al ~/
-      - run: ls -al ~/tmp/
+      - run: ls -al ~/tmp/target
   deploy:
     machine: true
     steps:
