@@ -9,8 +9,8 @@ public class DefaultBotOptionConfig {
     @Bean
     public DefaultBotOptions defaultBotOptions() {
         DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-        defaultBotOptions.setProxyHost("192.168.0.157");
-        defaultBotOptions.setProxyPort(54901);
+        defaultBotOptions.setProxyHost("whaple.iro.ooo");
+        defaultBotOptions.setProxyPort(4901);
         defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
         return defaultBotOptions;
     }
