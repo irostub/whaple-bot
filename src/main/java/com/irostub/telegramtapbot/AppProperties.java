@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Getter
 @Setter(value= AccessLevel.PACKAGE)
+@Profile({"prod","local"})
 @PropertySources({
         @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true)
 })
