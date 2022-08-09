@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 
 @RequiredArgsConstructor
-@AutoConfigureAfter
 @Service
 public class PublicApiHangangService {
     private final AppProperties appProperties;
