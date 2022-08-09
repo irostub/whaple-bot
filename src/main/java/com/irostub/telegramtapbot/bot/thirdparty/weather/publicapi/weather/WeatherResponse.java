@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherResponse {
     private Map<Category, FixedShortTermWeatherData> fixedWeatherDataMap = new HashMap<>();
@@ -17,7 +19,11 @@ public class WeatherResponse {
     public void unpackNested(Map<String, Object> response) {
         Map<String, Object> body = (Map<String, Object>) response.get("body");
         Map<String, Object> items = (Map<String, Object>) body.get("items");
-        List<ShortTermWeatherData> item = (List<ShortTermWeatherData>) items.get("item");
+        List<ShortTermWeatherData> item = ((List<Object>) items.get("item")).stream()
+                .map(o -> (Map<String, Object>) o)
+                .map(ShortTermWeatherData::new)
+                .collect(Collectors.toList());
+
         this.fixedWeatherDataMap = item.stream()
                 .collect(Collectors.toMap(
                         ShortTermWeatherData::getCategory,
@@ -100,6 +106,16 @@ public class WeatherResponse {
         private String baseTime;
         private Category category;
         private String obsrValue;
+
+        public ShortTermWeatherData() {
+        }
+
+        public ShortTermWeatherData(Map<String, Object> data) {
+            this.baseDate = (String) data.get("baseData");
+            this.baseTime = (String) data.get("baseTime");
+            this.category = Category.valueOf((String) data.get("category"));
+            this.obsrValue = (String) data.get("obsrValue");
+        }
     }
 
     public enum Category {

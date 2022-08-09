@@ -18,18 +18,12 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class TapBot extends TelegramLongPollingBot {
     private final AppProperties properties;
     private final CommandGateway commandGateway;
     private final AccountRepository accountRepository;
-
-    public TapBot(DefaultBotOptions options ,AppProperties properties, CommandGateway commandGateway, AccountRepository accountRepository) {
-        super(options);
-        this.properties = properties;
-        this.commandGateway = commandGateway;
-        this.accountRepository = accountRepository;
-    }
 
     //봇 초기화 [봇 토큰]
     @Override
@@ -115,77 +109,3 @@ public class TapBot extends TelegramLongPollingBot {
                 message.getFrom().getIsBot() == false;
     }
 }
-
-//
-//            if (!StringUtils.isEmpty(count)) {
-//                try {
-//                    limit = Long.parseLong(count);
-//                } catch (NumberFormatException e) {
-//                    log.warn("count is not number = {}, ex = {}", count, e);
-//                }
-//            }
-
-//            List<String> foodList = foodRepository.findByRandom(limit).stream()
-//                    .map(Food::getName)
-//                    .collect(Collectors.toList());
-//
-//            SendMessage sendMessage = new SendMessage();
-//            sendMessage.setChatId(update.getMessage().getChat().getId().toString());
-//            sendMessage.enableMarkdown(true);
-//            sendMessage.setText(String.join("\n", foodList));
-
-//            try {
-//                execute(sendMessage);
-//            } catch (TelegramApiException e) {
-//                e.printStackTrace();
-//            }
-
-
-/**MessageEntity entity = MessageEntity.builder()
- .offset(1)
- .length(8)
- .type("mention")
- .text("@irostub")
- .build();
- MessageEntity url = MessageEntity.builder()
- .type()
- .url("https://www.google.com")
- .length(3)
- .offset(0)
- .build();
- SendMessage sendMessage = new SendMessage();
- sendMessage.setEntities(List.of(url));
- sendMessage.setChatId(update.getMessage().getChat().getId().toString());
- sendMessage.setText("ggg");
- log.info("messageEntities={}", update.getMessage().getEntities());
-
- try {
- execute(sendMessage);
- } catch (TelegramApiException e) {
- e.printStackTrace();
- }**/
-
-/*UserProfilePhotos userProfilePhotos = null;
-        try {
-                userProfilePhotos = this.sendApiMethod(GetUserProfilePhotos.builder()
-                .userId(Long.parseLong(userId))
-                .limit(1)
-                .build());
-                } catch (TelegramApiException e) {
-                e.printStackTrace();
-                }*/
-
-
-/**
- *
- MessageEntity entity = MessageEntity.builder()
- .type("text_mention")
- .offset(0)
- .length(4)
- .user(update.getMessage().getFrom())
- .build();
- SendMessage sendMessage = new SendMessage();
- sendMessage.setChatId(update.getMessage().getChat().getId().toString());
- sendMessage.setEntities(List.of(entity));
- sendMessage.setText("동민 신asdfasdfasdfasdf");
- */

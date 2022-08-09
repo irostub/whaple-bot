@@ -12,6 +12,7 @@ public class RiverData {
     private LocalDateTime measureDateTime;
     private String Location;
     private Float temperature;
+    private Boolean inspection;
 
     public RiverData(Map<String, Object> rowData) {
         String msrDateTime = String.valueOf(rowData.get("MSR_DATE")) + rowData.get("MSR_TIME");
@@ -21,6 +22,11 @@ public class RiverData {
 
         this.measureDateTime = LocalDateTime.parse(msrDateTime, formatter);
         this.Location = siteId;
-        this.temperature = Float.valueOf(temperature);
+        try {
+            this.temperature = Float.valueOf(temperature);
+        }catch (NumberFormatException e){
+            this.temperature = null;
+            inspection = true;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.hangang;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.irostub.telegramtapbot.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -32,7 +33,12 @@ public class PublicApiHangangService {
     }
 
     public RiverData sendHangangRequest() {
-        HangangResponse hangangResponse = restTemplate.getForObject(url, HangangResponse.class);
+        HangangResponse hangangResponse = null;
+        try {
+            hangangResponse = restTemplate.getForObject(url, HangangResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if(hangangResponse.getHangangData() == null){
             throw new RuntimeException("HangangResponse.getHangData() is null");
         }

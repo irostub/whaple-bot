@@ -15,12 +15,13 @@ import java.time.Duration;
 public class RestTemplateConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                .requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
-                .setConnectTimeout(Duration.ofSeconds(5000L))
-                .setReadTimeout(Duration.ofSeconds(3000L))
-                .additionalMessageConverters(new StringHttpMessageConverter(StandardCharsets.UTF_8))
-                .build();
+        return restTemplateBuilder.build();
+//                .requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+//                .setConnectTimeout(Duration.ofSeconds(5000L))
+//                .setReadTimeout(Duration.ofSeconds(3000L))
+//                .additionalMessageConverters(new StringHttpMessageConverter(StandardCharsets.UTF_8))
+//                .build();
     }
+
 }
 

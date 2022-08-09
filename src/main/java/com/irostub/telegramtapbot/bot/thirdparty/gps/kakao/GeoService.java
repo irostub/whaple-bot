@@ -1,4 +1,4 @@
-package com.irostub.telegramtapbot.bot.thirdparty.gps.naver;
+package com.irostub.telegramtapbot.bot.thirdparty.gps.kakao;
 
 import com.irostub.telegramtapbot.AppProperties;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,17 +22,21 @@ public class GeoService {
     private final RestTemplate restTemplate;
     private final AppProperties appProperties;
 
-    public void getGeo(String location) {
+    public GeoResponse getGeo(String location) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK " + appProperties.getNaver().getGeo().getToken());
+        headers.set("Authorization", "KakaoAK " + appProperties.getKakao().getGeo().getToken());
 
-        UriComponentsBuilder builder = UriComponentsBuilder
-                .fromHttpUrl(appProperties.getNaver().getGeo().getUrl())
-                .queryParam("query", location);
+        UriComponents uriComponents = UriComponentsBuilder
+                .fromUriString(appProperties.getKakao().getGeo().getUrl())
+                .queryParam("query", location).build(false);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        ResponseEntity<GeoResponse> exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, GeoResponse.class);
+        ResponseEntity<GeoResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, entity, GeoResponse.class);
 
         log.info("exchange: " + exchange.getBody());
+        if (exchange.getStatusCode().is2xxSuccessful()) {
+            return exchange.getBody();
+        }
+        return null;
     }
 }

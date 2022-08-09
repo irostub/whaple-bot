@@ -24,4 +24,11 @@ public class HangangMessageDirector {
                 .text(builder.toString())
                 .build();
     }
+
+    public static SendMessage inspectionMessage(CommandGatewayPack pack) {
+        return SendMessage.builder()
+                .chatId(ExtractUtils.getChatId(pack))
+                .text("[한강 수도공사 점검중]")
+                .build();
+    }
 }

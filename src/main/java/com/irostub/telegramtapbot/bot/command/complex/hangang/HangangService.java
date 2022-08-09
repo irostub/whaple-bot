@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import static com.irostub.telegramtapbot.bot.command.complex.hangang.HangangMessageDirector.*;
+
 @RequiredArgsConstructor
 @Service
 public class HangangService implements Commandable {
@@ -18,7 +20,10 @@ public class HangangService implements Commandable {
     @Override
     public void execute(CommandGatewayPack pack) {
         RiverData riverData = publicApiHangangService.sendHangangRequest();
-        SendMessage sendMessage = HangangMessageDirector.hangangMessage(pack, riverData);
+
+        SendMessage sendMessage = riverData.getInspection() ?
+                inspectionMessage(pack) : hangangMessage(pack, riverData);
+
         try {
             pack.getAbsSender().execute(sendMessage);
         } catch (TelegramApiException e) {

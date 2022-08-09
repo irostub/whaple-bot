@@ -1,10 +1,13 @@
-package com.irostub.telegramtapbot.bot.thirdparty.weather;
+package com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ConvertGpsAndGrid {
     public final static int TO_GRID = 0;
     public final static int TO_GPS = 1;
 
-    public static LatXLngY convertGRID_GPS(int mode, double lat_X, double lng_Y )
+    public XYLatLng convertGRID_GPS(int mode, double lat_X, double lng_Y )
     {
         double RE = 6371.00877; // 지구 반경(km)
         double GRID = 5.0; // 격자 간격(km)
@@ -35,23 +38,25 @@ public class ConvertGpsAndGrid {
         sf = Math.pow(sf, sn) * Math.cos(slat1) / sn;
         double ro = Math.tan(Math.PI * 0.25 + olat * 0.5);
         ro = re * sf / Math.pow(ro, sn);
-        LatXLngY rs = new LatXLngY();
+        XYLatLng rs = new XYLatLng();
 
         if (mode == TO_GRID) {
-            rs.lat = lat_X;
-            rs.lng = lng_Y;
+            rs.setLat(lat_X);
+            rs.setLng(lng_Y);
             double ra = Math.tan(Math.PI * 0.25 + (lat_X) * DEGRAD * 0.5);
             ra = re * sf / Math.pow(ra, sn);
             double theta = lng_Y * DEGRAD - olon;
             if (theta > Math.PI) theta -= 2.0 * Math.PI;
             if (theta < -Math.PI) theta += 2.0 * Math.PI;
             theta *= sn;
-            rs.x = Math.floor(ra * Math.sin(theta) + XO + 0.5);
-            rs.y = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+            double xf = Math.floor(ra * Math.sin(theta) + XO + 0.5);
+            double xy = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+            rs.setX(xf);
+            rs.setY(xy);
         }
         else {
-            rs.x = lat_X;
-            rs.y = lng_Y;
+            rs.setX(lat_X);
+            rs.setY(lng_Y);
             double xn = lat_X - XO;
             double yn = ro - lng_Y + YO;
             double ra = Math.sqrt(xn * xn + yn * yn);
@@ -75,21 +80,9 @@ public class ConvertGpsAndGrid {
                 else theta = Math.atan2(xn, yn);
             }
             double alon = theta / sn + olon;
-            rs.lat = alat * RADDEG;
-            rs.lng = alon * RADDEG;
+            rs.setLat(alat * RADDEG);
+            rs.setLng(alon * RADDEG);
         }
         return rs;
-    }
-
-
-
-    public static class LatXLngY
-    {
-        public double lat;
-        public double lng;
-
-        public double x;
-        public double y;
-
     }
 }
