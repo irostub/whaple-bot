@@ -6,7 +6,7 @@ version: 2.1
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build:
+  buildaa:
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # Be sure to update the Docker image tag below to openjdk version of your application.
@@ -24,9 +24,7 @@ jobs:
           name: Build
           command: mvn -B -DskipTests clean install
       - run: ls -al ~/tmp/target
-  deploy:
-    machine: true
-    steps:
+
       - add_ssh_keys:
           fingerprints:
             - "82:18:75:92:9b:a7:d6:d5:82:b1:9c:32:2b:5a:be:e5"
@@ -44,12 +42,6 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  build-and-deploy:
+  buiw:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build # only deploy once build job has completed
-          filters:
-            branches:
-              only: master # only deploy on the main branch
+      - buildaa
