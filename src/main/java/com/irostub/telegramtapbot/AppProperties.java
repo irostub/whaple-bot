@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter(value= AccessLevel.PACKAGE)
 @PropertySources({
-        @PropertySource(value="file:${user.home}/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true)
+        @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.yml", ignoreResourceNotFound = true)
 })
 @Component
 @ConfigurationProperties(prefix = "app")
