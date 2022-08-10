@@ -12,28 +12,37 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class GeoService {
     private final RestTemplate restTemplate;
-    private final AppProperties appProperties;
+    private final AppProperties properties;
+    private final GeoHttpRequestFactory requestFactory;
 
     public GeoResponse getGeo(String location) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK " + appProperties.getKakao().getGeo().getToken());
-
         UriComponents uriComponents = UriComponentsBuilder
-                .fromUriString(appProperties.getKakao().getGeo().getUrl())
+                .fromUriString(properties.getKakao().getGeo().getUrl())
                 .queryParam("query", location).build(false);
 
-        HttpEntity<?> entity = new HttpEntity<>(headers);
+        HttpEntity<?> entity = requestFactory.getHttpEntity();
         ResponseEntity<GeoResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, entity, GeoResponse.class);
 
         log.info("exchange: " + exchange.getBody());
+        if (exchange.getStatusCode().is2xxSuccessful()) {
+            return exchange.getBody();
+        }
+        return null;
+    }
+
+    public GeoKeywordResponse getGeoKeyword(String location) {
+        UriComponents uriComponents = UriComponentsBuilder
+                .fromUriString(properties.getKakao().getGeo().getKeywordUrl())
+                .queryParam("query", location).build(false);
+
+        HttpEntity<?> entity = requestFactory.getHttpEntity();
+        ResponseEntity<GeoKeywordResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, entity, GeoKeywordResponse.class);
+
         if (exchange.getStatusCode().is2xxSuccessful()) {
             return exchange.getBody();
         }

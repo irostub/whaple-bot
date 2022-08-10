@@ -4,12 +4,10 @@ import com.irostub.telegramtapbot.bot.command.complex.CommandGatewayPack;
 import com.irostub.telegramtapbot.bot.command.complex.CommandType;
 import com.irostub.telegramtapbot.bot.command.complex.Commandable;
 import com.irostub.telegramtapbot.bot.command.utils.ExtractUtils;
+import com.irostub.telegramtapbot.bot.thirdparty.gps.kakao.GeoKeywordResponse;
 import com.irostub.telegramtapbot.bot.thirdparty.gps.kakao.GeoResponse;
 import com.irostub.telegramtapbot.bot.thirdparty.gps.kakao.GeoService;
-import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.ConvertGpsAndGrid;
-import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.PublicApiWeatherService;
-import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.WeatherResponse;
-import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.XYLatLng;
+import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.*;
 import com.irostub.telegramtapbot.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,22 +34,49 @@ public class WeatherService implements Commandable {
             //등록한 주소로 set
         }
         GeoResponse geo = geoService.getGeo(address);
-        if(geo.getDocuments() != null && geo.getDocuments().size()>0){
+        Double x_gps = null;
+        Double y_gps = null;
+
+        if (geo.getDocuments() != null && geo.getDocuments().size() > 0) {
             GeoResponse.Document document = geo.getDocuments().get(0);
-            double x_gps = Double.parseDouble(document.getAddress().getX());
-            double y_gps = Double.parseDouble(document.getAddress().getY());
-            XYLatLng xyLatLng = convertGpsAndGrid.convertGRID_GPS(ConvertGpsAndGrid.TO_GRID, y_gps, x_gps);
-            Map<WeatherResponse.Category, WeatherResponse.FixedShortTermWeatherData> categoryFixedShortTermWeatherDataMap = weatherService.sendCurrentWeatherRequest(xyLatLng.getXString(), xyLatLng.getYString());
-            log.info("category = {}, data = {}", WeatherResponse.Category.RN1,categoryFixedShortTermWeatherDataMap.get(WeatherResponse.Category.RN1));
+            x_gps = Double.parseDouble(document.getAddress().getX());
+            y_gps = Double.parseDouble(document.getAddress().getY());
+        } else {
+            GeoKeywordResponse geoKeyword = geoService.getGeoKeyword(address);
+            if (geoKeyword.getDocuments() != null && geoKeyword.getDocuments().size() > 0) {
+                x_gps = geoKeyword.getDocuments().get(0).getX();
+                y_gps = geoKeyword.getDocuments().get(0).getY();
+            }
+        }
+
+        //주소, 키워드 주소로 아무것도 찾을 수 없을 때 반환
+        if (x_gps == null || y_gps == null) {
             SendMessage build = SendMessage.builder()
                     .chatId(ExtractUtils.getChatId(pack))
-                    .text(categoryFixedShortTermWeatherDataMap.get(WeatherResponse.Category.RN1).getObsrValue())
+                    .text("지역 주소를 찾을 수 없습니다.")
                     .build();
             try {
                 pack.getAbsSender().execute(build);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
+            return;
+        }
+
+        XYLatLng xyLatLng = convertGpsAndGrid.convertGRID_GPS(ConvertGpsAndGrid.TO_GRID, y_gps, x_gps);
+
+        Map<Category, FixedShortTermWeatherData> fixedShortTermWeatherDataMap = weatherService
+                .sendCurrentWeatherRequest(xyLatLng.getXString(), xyLatLng.getYString());
+
+        log.info("category = {}, data = {}", Category.RN1, fixedShortTermWeatherDataMap.get(Category.RN1));
+        SendMessage build = SendMessage.builder()
+                .chatId(ExtractUtils.getChatId(pack))
+                .text(fixedShortTermWeatherDataMap.get(Category.RN1).getObsrValue())
+                .build();
+        try {
+            pack.getAbsSender().execute(build);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 

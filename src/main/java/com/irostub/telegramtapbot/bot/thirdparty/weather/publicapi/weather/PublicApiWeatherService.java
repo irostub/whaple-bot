@@ -24,7 +24,7 @@ import java.util.Map;
 public class PublicApiWeatherService {
     private final AppProperties appProperties;
 
-    public Map<WeatherResponse.Category, WeatherResponse.FixedShortTermWeatherData> sendCurrentWeatherRequest(String nx, String ny){
+    public Map<Category, FixedShortTermWeatherData> sendCurrentWeatherRequest(String nx, String ny){
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 

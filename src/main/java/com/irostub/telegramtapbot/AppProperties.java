@@ -11,7 +11,8 @@ import java.util.Set;
 
 @Data
 @PropertySources({
-        @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.properties", ignoreResourceNotFound = true)
+        @PropertySource(value="file:/home/irostub/hosting/telegram/application-prod.properties",
+                ignoreResourceNotFound = true)
 })
 @Configuration
 @ConfigurationProperties(prefix = "app")
@@ -56,6 +57,7 @@ public class AppProperties {
         public static class Geo{
             private String url;
             private String token;
+            private String keywordUrl;
         }
     }
 
