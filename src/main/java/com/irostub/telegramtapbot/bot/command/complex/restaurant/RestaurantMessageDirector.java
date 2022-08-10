@@ -2,7 +2,6 @@ package com.irostub.telegramtapbot.bot.command.complex.restaurant;
 
 import com.irostub.telegramtapbot.bot.MessageEntityType;
 import com.irostub.telegramtapbot.bot.command.complex.CommandGatewayPack;
-import com.irostub.telegramtapbot.bot.command.utils.ExtractUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
@@ -10,8 +9,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
-import static com.irostub.telegramtapbot.bot.command.utils.ExtractUtils.*;
 import static com.irostub.telegramtapbot.bot.command.utils.ExtractUtils.extractUsername;
+import static com.irostub.telegramtapbot.bot.command.utils.ExtractUtils.getChatId;
 
 public class RestaurantMessageDirector {
     
@@ -52,7 +51,7 @@ public class RestaurantMessageDirector {
         return SendMessage.builder()
                 .chatId(getChatId(pack))
                 .entities(List.of(createRestaurantMessageEntity(pack)))
-                .text(extractUsername(pack.getUpdate()) + "님 " + restaurantName + "은(는) 이미 등록되어있어요.")
+                .text(extractUsername(pack.getUpdate()) + "님 " + restaurantName + "(은)는 이미 등록되어있어요.")
                 .build();
     }
 
@@ -60,7 +59,7 @@ public class RestaurantMessageDirector {
         return SendMessage.builder()
                 .chatId(getChatId(pack))
                 .entities(List.of(createRestaurantMessageEntity(pack)))
-                .text(extractUsername(pack.getUpdate()) + "님 " + restaurantName + "가(이) 등록되었어요.")
+                .text(extractUsername(pack.getUpdate()) + "님 " + restaurantName + "(이)가 등록되었어요.")
                 .build();
     }
 
@@ -70,7 +69,7 @@ public class RestaurantMessageDirector {
     public static SendMessage deleteNotOwnerRestaurantMessage(CommandGatewayPack pack, String accountName, String restaurantName) {
         return SendMessage.builder()
                 .chatId(getChatId(pack))
-                .text(accountName + "님이 등록한 " + restaurantName + "은(는) 등록자만 삭제할 수 있어요.")
+                .text(accountName + "님이 등록한 " + restaurantName + "(은)는 등록자만 삭제할 수 있어요.")
                 .build();
     }
 
@@ -78,7 +77,41 @@ public class RestaurantMessageDirector {
     public static SendMessage deleteRestaurantMessage(CommandGatewayPack pack, String restaurantName) {
         return SendMessage.builder()
                 .chatId(getChatId(pack))
-                .text(restaurantName + "이 삭제되었어요.")
+                .text(restaurantName + "(이)가 삭제되었어요.")
+                .build();
+    }
+
+    /*
+        ignore
+    */
+    public static SendMessage ignoreRestaurantExistMessage(CommandGatewayPack pack, String accountName, String restaurantName) {
+        return SendMessage.builder()
+                .chatId(getChatId(pack))
+                .text(accountName + "님은 이미 " + restaurantName + "(을)를 무시하셨어요.\n무맥락 음식 혐오를 멈춰주세요 ^0^")
+                .build();
+    }
+
+    public static SendMessage successIgnoreRestuarantMessage(CommandGatewayPack pack, String restaurantName) {
+        return SendMessage.builder()
+                .chatId(getChatId(pack))
+                .text(restaurantName + "(이)가 무시되었어요.\n" + restaurantName + "(을)를 싫어하시나봐요? ㅋ")
+                .build();
+    }
+
+    /*
+        restore
+     */
+    public static SendMessage notExistIgnoreRestaurantMessage(CommandGatewayPack pack, String restaurantName) {
+        return SendMessage.builder()
+                .chatId(getChatId(pack))
+                .text(restaurantName + "(을)를 무시한 적 없어요.")
+                .build();
+    }
+
+    public static SendMessage successRestoreIgnoreRestaurantMessage(CommandGatewayPack pack, String restaurantName) {
+        return SendMessage.builder()
+                .chatId(getChatId(pack))
+                .text(restaurantName + "(을)를 복구했어요.\n다시 추천 리스트에서 " + restaurantName + "(을)를 볼 수 있을 거예요!\uD83D\uDE0B")
                 .build();
     }
 
