@@ -69,12 +69,10 @@ public class WeatherService implements Commandable {
                 .sendCurrentWeatherRequest(xyLatLng.getXString(), xyLatLng.getYString());
 
         log.info("category = {}, data = {}", Category.RN1, fixedShortTermWeatherDataMap.get(Category.RN1));
-        SendMessage build = SendMessage.builder()
-                .chatId(ExtractUtils.getChatId(pack))
-                .text(fixedShortTermWeatherDataMap.get(Category.RN1).getObsrValue())
-                .build();
+
+        SendMessage sendMessage = WeatherMessageDirector.weatherMessage(pack,fixedShortTermWeatherDataMap);
         try {
-            pack.getAbsSender().execute(build);
+            pack.getAbsSender().execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
