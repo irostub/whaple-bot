@@ -1,12 +1,14 @@
 package com.irostub.telegramtapbot.bot.command.complex.restaurant;
 
 import com.irostub.telegramtapbot.bot.command.complex.*;
-import com.irostub.telegramtapbot.bot.command.utils.HarimUtils;
 import com.irostub.telegramtapbot.bot.command.utils.ParseUtils;
 import com.irostub.telegramtapbot.domain.Account;
+import com.irostub.telegramtapbot.domain.IgnoreRestaurant;
 import com.irostub.telegramtapbot.domain.Restaurant;
 import com.irostub.telegramtapbot.repository.AccountRepository;
+import com.irostub.telegramtapbot.repository.IgnoreRestaurantRepository;
 import com.irostub.telegramtapbot.repository.RestaurantRepository;
+import com.irostub.telegramtapbot.repository.query.IgnoreRestaurantQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,8 @@ public class RestaurantService implements Commandable {
 
     private final RestaurantRepository repository;
     private final AccountRepository accountRepository;
+    private final IgnoreRestaurantRepository ignoreRestaurantRepository;
+    private final IgnoreRestaurantQueryRepository ignoreRestaurantQueryRepository;
 
     @Override
     public void execute(CommandGatewayPack pack) {
@@ -44,6 +48,12 @@ public class RestaurantService implements Commandable {
             case RECOMMEND:
                 recommend(subOptions, pack);
                 break;
+            case IGNORE:
+                ignore(subOptions, pack);
+                break;
+            case RESTORE:
+                restore(subOptions, pack);
+                break;
             case READ:
                 read(pack);
                 break;
@@ -54,11 +64,7 @@ public class RestaurantService implements Commandable {
 
     private void help(CommandGatewayPack pack) {
         SendMessage sendMessage = helpMessage(pack);
-        try {
-            pack.getAbsSender().execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        sendExecute(pack, sendMessage);
     }
 
     private void create(String subOptions, CommandGatewayPack pack) {
@@ -71,25 +77,15 @@ public class RestaurantService implements Commandable {
         if (optionalRestaurant.isPresent()) {
             SendMessage sendMessage = createExistsRestaurantMessage(pack, restaurantName);
 
-            try {
-                pack.getAbsSender().execute(sendMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            sendExecute(pack, sendMessage);
         } else {
-            Account account = accountRepository
-                    .findById(pack.getUpdate().getMessage().getFrom().getId())
-                    .orElseThrow(AccountNotFoundException::new);
+            Account account = getAccount(pack);
             Restaurant restaurant = Restaurant.newRestaurant(restaurantName, null, null, account);
             repository.save(restaurant);
 
             SendMessage sendMessage = createRestaurantMessage(pack, restaurantName);
 
-            try {
-                pack.getAbsSender().execute(sendMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            sendExecute(pack, sendMessage);
         }
     }
 
@@ -98,21 +94,59 @@ public class RestaurantService implements Commandable {
 
         if (isWrongUsage(pack, restaurantName)) return;
 
-        Restaurant findRestaurant = repository.findByName(restaurantName).orElseThrow();
+        Restaurant restaurant = getRestaurant(restaurantName);
         SendMessage message;
 
-        if (isDeleteOwner(pack, findRestaurant) == false) {
-            message = deleteNotOwnerRestaurantMessage(pack, findRestaurant.getAccount().getName(), restaurantName);
+        if (isDeleteOwner(pack, restaurant) == false) {
+            message = deleteNotOwnerRestaurantMessage(pack, restaurant.getAccount().getName(), restaurantName);
         } else {
             message = deleteRestaurantMessage(pack, restaurantName);
-            repository.delete(findRestaurant);
+            repository.delete(restaurant);
         }
 
-        try {
-            pack.getAbsSender().execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        sendExecute(pack, message);
+    }
+
+    private void ignore(String subOptions, CommandGatewayPack pack) {
+        String restaurantName = subOptions.strip();
+
+        if (isWrongUsage(pack, restaurantName)) return;
+
+        Account account = getAccount(pack);
+        Restaurant restaurant = getRestaurant(restaurantName);
+
+        Optional<IgnoreRestaurant> exist = ignoreRestaurantRepository.findByAccountAndRestaurant(account, restaurant);
+        SendMessage message;
+
+        if (exist.isPresent()) {
+            message = ignoreRestaurantExistMessage(pack, account.getName(), restaurantName);
+        } else {
+            IgnoreRestaurant ignoreRestaurant = new IgnoreRestaurant(account, restaurant);
+            ignoreRestaurantRepository.save(ignoreRestaurant);
+            message = successIgnoreRestuarantMessage(pack, restaurantName);
         }
+
+        sendExecute(pack, message);
+    }
+
+    private void restore(String subOptions, CommandGatewayPack pack) {
+        String restaurantName = subOptions.strip();
+
+        if (isWrongUsage(pack, restaurantName)) return;
+
+        Account account = getAccount(pack);
+        Restaurant restaurant = getRestaurant(restaurantName);
+
+        Optional<IgnoreRestaurant> ignoreRestaurant = ignoreRestaurantRepository.findByAccountAndRestaurant(account, restaurant);
+        SendMessage message;
+        if (ignoreRestaurant.isPresent()) {
+            ignoreRestaurantRepository.delete(ignoreRestaurant.get());
+            message = successRestoreIgnoreRestaurantMessage(pack, restaurantName);
+        } else {
+            message = notExistIgnoreRestaurantMessage(pack, restaurantName);
+        }
+
+        sendExecute(pack, message);
     }
 
     private boolean isDeleteOwner(CommandGatewayPack pack, Restaurant findRestaurant) {
@@ -126,22 +160,18 @@ public class RestaurantService implements Commandable {
 
         SendMessage sendMessage = readRestaurantListMessage(pack, restaurantNameList);
 
-        try {
-            pack.getAbsSender().execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        sendExecute(pack, sendMessage);
     }
 
     private void recommend(String subOptions, CommandGatewayPack pack) {
         Integer limit = Integer.parseInt(subOptions.strip());
         List<Restaurant> pickedRestaurants = repository.findByRandom(limit);
 
-        if (HarimUtils.isHarim(pack)) {
-            pickedRestaurants = removeIgnoreRestaurant(pickedRestaurants);
-            if (pickedRestaurants.isEmpty()) {
-                recommend(subOptions, pack);
-            }
+        Account account = getAccount(pack);
+
+        pickedRestaurants = removeIgnoreRestaurant(account, pickedRestaurants);
+        if (pickedRestaurants.isEmpty()) {
+            recommend(subOptions, pack);
         }
 
         String flatList = pickedRestaurants.stream()
@@ -151,6 +181,23 @@ public class RestaurantService implements Commandable {
                 .collect(Collectors.joining("\n"));
 
         SendMessage sendMessage = recommendMessage(pack, flatList);
+
+        sendExecute(pack, sendMessage);
+    }
+
+    private Account getAccount(CommandGatewayPack pack) {
+        Account account = accountRepository
+                .findById(pack.getUpdate().getMessage().getFrom().getId())
+                .orElseThrow(AccountNotFoundException::new);
+        return account;
+    }
+
+    private Restaurant getRestaurant(String restaurantName) {
+        Restaurant restaurant = repository.findByName(restaurantName).orElseThrow(RestaurantNotFoundException::new);
+        return restaurant;
+    }
+
+    private void sendExecute(CommandGatewayPack pack, SendMessage sendMessage) {
         try {
             pack.getAbsSender().execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -187,7 +234,11 @@ public class RestaurantService implements Commandable {
         return RestaurantSubCommand.of(StringUtils.substringBefore(options, " "));
     }
 
-    private List<Restaurant> removeIgnoreRestaurant(List<Restaurant> list) {
-        return list.stream().filter(HarimUtils::isNotIgnoredRestaurant).collect(Collectors.toList());
+    private List<Restaurant> removeIgnoreRestaurant(Account account, List<Restaurant> list) {
+        List<Long> ignoreList = ignoreRestaurantQueryRepository.getIgnoreList(account).stream()
+                .map(IgnoreRestaurant::getRestaurant)
+                .map(Restaurant::getId).collect(Collectors.toList());
+        List<Restaurant> result = list.stream().filter(attr -> !ignoreList.contains(attr.getId())).collect(Collectors.toList());
+        return result;
     }
 }

@@ -1,7 +1,6 @@
 package com.irostub.telegramtapbot.repository.query;
 
 
-import com.irostub.telegramtapbot.domain.QAccount;
 import com.irostub.telegramtapbot.domain.Restaurant;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,8 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.irostub.telegramtapbot.domain.QAccount.*;
-import static com.irostub.telegramtapbot.domain.QRestaurant.*;
+import static com.irostub.telegramtapbot.domain.QAccount.account;
+import static com.irostub.telegramtapbot.domain.QRestaurant.restaurant;
 
 @RequiredArgsConstructor
 @Repository
