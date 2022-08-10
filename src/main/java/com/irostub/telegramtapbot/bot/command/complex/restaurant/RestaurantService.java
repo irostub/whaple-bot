@@ -1,6 +1,7 @@
 package com.irostub.telegramtapbot.bot.command.complex.restaurant;
 
 import com.irostub.telegramtapbot.bot.command.complex.*;
+import com.irostub.telegramtapbot.bot.command.utils.HarimUtils;
 import com.irostub.telegramtapbot.bot.command.utils.ParseUtils;
 import com.irostub.telegramtapbot.domain.Account;
 import com.irostub.telegramtapbot.domain.Restaurant;
@@ -136,6 +137,13 @@ public class RestaurantService implements Commandable {
         Integer limit = Integer.parseInt(subOptions.strip());
         List<Restaurant> pickedRestaurants = repository.findByRandom(limit);
 
+        if (HarimUtils.isHarim(pack)) {
+            pickedRestaurants = removeIgnoreRestaurant(pickedRestaurants);
+            if (pickedRestaurants.isEmpty()) {
+                recommend(subOptions, pack);
+            }
+        }
+
         String flatList = pickedRestaurants.stream()
                 .map(restaurant -> restaurant.getName() + " - " +
                         restaurant.getAccount().getName() +
@@ -177,5 +185,9 @@ public class RestaurantService implements Commandable {
 
     private RestaurantSubCommand getSubCommand(String options) {
         return RestaurantSubCommand.of(StringUtils.substringBefore(options, " "));
+    }
+
+    private List<Restaurant> removeIgnoreRestaurant(List<Restaurant> list) {
+        return list.stream().filter(HarimUtils::isNotIgnoredRestaurant).collect(Collectors.toList());
     }
 }
