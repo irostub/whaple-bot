@@ -28,7 +28,7 @@ public class WeatherMessageDirector {
         String formatRainType = String.format("기상 : %s", rainType.getObsrValue());
         String formatRain = null;
         if (!rainType.getObsrValue().equals(RainType.NONE.toNumericString())) {
-            formatRain = String.format(" 강수 : %s", rain.getObsrValue());
+            formatRain = String.format("강수 : %s", rain.getObsrValue());
         }
 /*
 23.8 ℃    98 %
