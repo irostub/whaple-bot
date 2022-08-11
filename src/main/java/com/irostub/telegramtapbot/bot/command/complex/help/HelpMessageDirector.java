@@ -1,9 +1,7 @@
 package com.irostub.telegramtapbot.bot.command.complex.help;
 
-import com.irostub.telegramtapbot.bot.MessageEntityType;
 import com.irostub.telegramtapbot.bot.command.complex.CommandGatewayPack;
 import com.irostub.telegramtapbot.bot.command.utils.ExtractUtils;
-import com.irostub.telegramtapbot.bot.command.utils.MessageEntityUtils;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
@@ -19,7 +17,6 @@ public class HelpMessageDirector {
     private static final String HELP_URL = "https://whaple.iro.ooo";
 
     private static List<MessageEntity> helpMessageEntity(String message) {
-
         MessageEntity clickEntity = toLinkType(message, CLICK_HERE, HELP_URL);
         MessageEntity lunchEntity = toBoldType(message, LUNCH_ROULETTE);
         MessageEntity weatherEntity = toBoldType(message, CHECK_WEATHER);
@@ -48,7 +45,6 @@ public class HelpMessageDirector {
                         "날씨 [지역]\n\n"+
                         CHECK_HANGANG + "\n"+
                         "한강";
-                ;
 
         return SendMessage.builder()
                 .chatId(ExtractUtils.getChatId(pack))

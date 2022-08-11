@@ -2,6 +2,7 @@ package com.irostub.telegramtapbot.bot.command.utils;
 
 import com.irostub.telegramtapbot.bot.MessageEntityType;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 public class MessageEntityUtils {
     private static MessageEntity toBoldType(int offset, int length) {
@@ -20,6 +21,16 @@ public class MessageEntityUtils {
                 .length(length)
                 .build();
     }
+
+    public static MessageEntity toMention(int offset, int length, String username, User user) {
+        return MessageEntity.builder()
+                .type(MessageEntityType.TEXT_MENTION)
+                .offset(offset)
+                .length(username.length())
+                .user(user)
+                .build();
+    }
+
     public static MessageEntity toBoldType(String originalMessage, String targetStr) {
         int idx = originalMessage.indexOf(targetStr);
         return toBoldType(idx, targetStr.length());
