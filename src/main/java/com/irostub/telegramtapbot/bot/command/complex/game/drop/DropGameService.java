@@ -26,7 +26,7 @@ public class DropGameService implements Commandable {
                 .build();
         SendGame build = SendGame.builder()
                 .chatId(ExtractUtils.getChatId(pack))
-                .gameShortName("tap! tab! tap!")
+                .gameShortName("dropbox")
                 .replyMarkup(build2)
                 .build();
         try {
