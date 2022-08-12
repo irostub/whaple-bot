@@ -1,5 +1,5 @@
 
-BUILD STATUS [![CircleCI](https://dl.circleci.com/status-badge/img/gh/irostub/whaple-bot/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/irostub/whaple-bot/tree/master)  
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/irostub/whaple-bot/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/irostub/whaple-bot/tree/master)  
 다기능 텔레그램 와플봇입니다. 와플봇은 다음 명령어를 지원합니다.  
 명령어 접두문자는 공백, 슬래시, 마침표 등을 지원합니다.  
 각 명령어에 대한 설명은 [명령어] ? 로 확인해보세요!  
