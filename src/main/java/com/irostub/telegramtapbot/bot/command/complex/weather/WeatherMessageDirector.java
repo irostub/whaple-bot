@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.Map;
 
 public class WeatherMessageDirector {
-    public static SendMessage weatherMessage(CommandGatewayPack pack, Map<Category, FixedShortTermWeatherData> dataMap) {
+    public static SendMessage weatherMessage(CommandGatewayPack pack, Map<Category, FixedShortTermWeatherData> dataMap, String address) {
         FixedShortTermWeatherData temp = dataMap.get(Category.T1H);
         FixedShortTermWeatherData rain = dataMap.get(Category.RN1);
 
@@ -30,12 +30,7 @@ public class WeatherMessageDirector {
         if (!rainType.getObsrValue().equals(RainType.NONE.toNumericString())) {
             formatRain = String.format("강수 : %s", rain.getObsrValue());
         }
-/*
-23.8 ℃    98 %
-0.1 m/s   북풍
-없음        0 mm
 
- */
         StringBuilder sb = new StringBuilder();
         sb.append(formatTemp).append("\n")
                 .append(formatHumidity).append("\n")
@@ -45,11 +40,12 @@ public class WeatherMessageDirector {
         if (formatRain != null) {
             sb.append(formatRain).append("\n");
         }
+        sb.append("\n")
+                .append(address).append("에서 측정했어요!");
 
         return SendMessage.builder()
                 .chatId(ExtractUtils.getChatId(pack))
                 .text(sb.toString())
                 .build();
     }
-
 }

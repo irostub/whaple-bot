@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dropbox</title>
+	<!-- <link rel="stylesheet" href="style.css">
+	<script src="./dist/index.js"></script> -->
+	<script>
+		(()=>{var m=()=>(window.devicePixelRatio||1)<2?1:2;var v=[1e3,1300,1600,2e3,3e3,4e3,5e3,6e3,7e3,7300,7600,8e3,9e3,1e4];var p=class{constructor(){this.canvas=document.getElementById("board");this.ctx=this.canvas.getContext("2d");this.ratio=m();this.width=0;this.height=0;this.speed=800;this.scale=0;this.dataIdx=0;this.position=!1;this.drawAll=e=>{let{ctx:t,width:r,height:i,scale:a,speed:h,dataIdx:P}=this;t.clearRect(0,0,r,i);let s=r/2;t.lineWidth=a/10,t.beginPath();let w=.2,l=this.getPercentY(w),f=l*.8,g=h*w,c=-(e%g/g)*l;for(;t.moveTo(s,c),t.lineTo(s,c+f),c+=l,!(c>=i););t.stroke(),t.beginPath(),t.lineWidth=a/5;let d=this.dataIdx,n=!(this.dataIdx%2);for(;;){let o=v[d],I=s+a*(n?2:-2);if(!o)break;if(e+h>o&&e<o){let Y=(o-e)/h,b=this.getPercentY(Y);t.moveTo(s,b),t.lineTo(I,b),n=!n,d++;continue}else if(e>o){this.dataIdx++,d++,n=!n;continue}v[P];break}t.stroke();let x=a/5,R=s+(this.position?-a-x:x),C=this.getPercentY(.2);t.fillRect(R,C,a,a),window.requestAnimationFrame(this.drawAll)};this.callbackClick=()=>{this.position=!this.position};this.getPercentY=e=>this.height*e;this.callbackResize=e=>{if(e[0]){let t=e[0].contentRect;this.width=t.width,this.height=t.height,this.ratio=this.ratio,this.resizeCanvas(),window.requestAnimationFrame(this.drawAll)}};this.resizeCanvas=()=>{let{canvas:e,width:t,height:r,ratio:i}=this;e.width=t*i,e.height=r*i,this.scale=Math.ceil(this.getPercentY(.05)),this.ctx.scale(i,i)};this.ctx.fillStyle="#BDBDBD",new ResizeObserver(this.callbackResize).observe(this.canvas),document.addEventListener("touchstart",this.callbackClick),document.addEventListener("keydown",e=>{e.key===" "&&this.callbackClick()})}},u=p;window.onload=()=>{new u};})();
+	</script>
+	<style>
+		html, body, #board {
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="board"></canvas>
+</body>
+</html>

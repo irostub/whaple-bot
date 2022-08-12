@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
 @Slf4j
@@ -39,6 +40,21 @@ public class TapBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (update.hasCallbackQuery()) {
+            String callbackId = update.getCallbackQuery().getId();
+            String userId = update.getCallbackQuery().getFrom().getId().toString();
+            AnswerCallbackQuery build = AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackId)
+                    .url(properties.getBot().getGame().getDropbox().getUrl()+"?user="+userId)
+                    .build();
+            ///game?id=" + userId
+            try {
+                this.execute(build);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         if (isGroupOrUserMessage(update) == false) {
             return;
         }

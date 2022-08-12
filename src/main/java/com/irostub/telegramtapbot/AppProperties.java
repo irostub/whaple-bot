@@ -26,12 +26,30 @@ public class AppProperties {
         private String token;
         private String botUsername;
         private Set<String> prefix = new HashSet<>();
+        private Game game;
+
+        @Data
+        public static class Game{
+            private Dropbox dropbox;
+
+            @Data
+            public static class Dropbox{
+                private String url;
+            }
+        }
     }
 
     @Data
     public static class PublicApi{
         private Weather weather;
         private Hangang hangang;
+        private Corona corona;
+
+        @Data
+        public static class Corona{
+            private String url;
+            private String token;
+        }
 
         @Data
         public static class Hangang{

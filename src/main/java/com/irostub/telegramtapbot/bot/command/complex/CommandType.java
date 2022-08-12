@@ -11,7 +11,8 @@ public enum CommandType {
     CORONA("코로나", "ㅋㄹㄴ"),
     RPS("가위바위보", "ㄱㅂㅂ", "rps"),
     HANGANG("한강", "ㅎㄱ", "temp"),
-    WEATHER("날씨", "ㄴㅆ", "weather");
+    WEATHER("날씨", "ㄴㅆ", "weather"),
+    GAME_DROP_BOX("드롭박스", "ㄷㄹㅂㅅ", "dropbox");
 
     private final List<String> properties;
 

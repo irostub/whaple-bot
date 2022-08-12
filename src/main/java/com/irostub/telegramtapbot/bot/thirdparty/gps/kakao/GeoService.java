@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.Nullable;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -25,6 +27,10 @@ public class GeoService {
                 .fromUriString(properties.getKakao().getGeo().getUrl())
                 .queryParam("query", location).build(false);
 
+        return sendRequest(uriComponents);
+    }
+
+    private GeoResponse sendRequest(UriComponents uriComponents) {
         HttpEntity<?> entity = requestFactory.getHttpEntity();
         ResponseEntity<GeoResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, entity, GeoResponse.class);
 
@@ -35,17 +41,11 @@ public class GeoService {
         return null;
     }
 
-    public GeoKeywordResponse getGeoKeyword(String location) {
+    public GeoResponse getGeoKeyword(String location) {
         UriComponents uriComponents = UriComponentsBuilder
                 .fromUriString(properties.getKakao().getGeo().getKeywordUrl())
                 .queryParam("query", location).build(false);
 
-        HttpEntity<?> entity = requestFactory.getHttpEntity();
-        ResponseEntity<GeoKeywordResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, entity, GeoKeywordResponse.class);
-
-        if (exchange.getStatusCode().is2xxSuccessful()) {
-            return exchange.getBody();
-        }
-        return null;
+        return sendRequest(uriComponents);
     }
 }

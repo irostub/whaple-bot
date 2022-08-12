@@ -4,7 +4,6 @@ import com.irostub.telegramtapbot.bot.command.complex.CommandGatewayPack;
 import com.irostub.telegramtapbot.bot.command.complex.CommandType;
 import com.irostub.telegramtapbot.bot.command.complex.Commandable;
 import com.irostub.telegramtapbot.bot.command.utils.ExtractUtils;
-import com.irostub.telegramtapbot.bot.thirdparty.gps.kakao.GeoKeywordResponse;
 import com.irostub.telegramtapbot.bot.thirdparty.gps.kakao.GeoResponse;
 import com.irostub.telegramtapbot.bot.thirdparty.gps.kakao.GeoService;
 import com.irostub.telegramtapbot.bot.thirdparty.weather.publicapi.weather.*;
@@ -36,16 +35,19 @@ public class WeatherService implements Commandable {
         GeoResponse geo = geoService.getGeo(address);
         Double x_gps = null;
         Double y_gps = null;
+        String addressName = null;
 
         if (geo.getDocuments() != null && geo.getDocuments().size() > 0) {
             GeoResponse.Document document = geo.getDocuments().get(0);
-            x_gps = Double.parseDouble(document.getAddress().getX());
-            y_gps = Double.parseDouble(document.getAddress().getY());
+            x_gps = document.getX();
+            y_gps = document.getY();
+            addressName = document.getAddressName();
         } else {
-            GeoKeywordResponse geoKeyword = geoService.getGeoKeyword(address);
+            GeoResponse geoKeyword = geoService.getGeoKeyword(address);
             if (geoKeyword.getDocuments() != null && geoKeyword.getDocuments().size() > 0) {
                 x_gps = geoKeyword.getDocuments().get(0).getX();
                 y_gps = geoKeyword.getDocuments().get(0).getY();
+                addressName = geoKeyword.getDocuments().get(0).getAddressName();
             }
         }
 
@@ -53,7 +55,7 @@ public class WeatherService implements Commandable {
         if (x_gps == null || y_gps == null) {
             SendMessage build = SendMessage.builder()
                     .chatId(ExtractUtils.getChatId(pack))
-                    .text("지역 주소를 찾을 수 없습니다.")
+                    .text("지역 주소를 찾을 수 없어요.")
                     .build();
             try {
                 pack.getAbsSender().execute(build);
@@ -70,7 +72,7 @@ public class WeatherService implements Commandable {
 
         log.info("category = {}, data = {}", Category.RN1, fixedShortTermWeatherDataMap.get(Category.RN1));
 
-        SendMessage sendMessage = WeatherMessageDirector.weatherMessage(pack,fixedShortTermWeatherDataMap);
+        SendMessage sendMessage = WeatherMessageDirector.weatherMessage(pack, fixedShortTermWeatherDataMap, addressName);
         try {
             pack.getAbsSender().execute(sendMessage);
         } catch (TelegramApiException e) {
