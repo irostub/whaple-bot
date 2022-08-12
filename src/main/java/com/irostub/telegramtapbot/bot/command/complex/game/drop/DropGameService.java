@@ -4,6 +4,7 @@ import com.irostub.telegramtapbot.bot.command.complex.CommandGatewayPack;
 import com.irostub.telegramtapbot.bot.command.complex.CommandType;
 import com.irostub.telegramtapbot.bot.command.complex.Commandable;
 import com.irostub.telegramtapbot.bot.command.utils.ExtractUtils;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendGame;
 import org.telegram.telegrambots.meta.api.objects.games.CallbackGame;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
+@Service
 public class DropGameService implements Commandable {
     @Override
     public void execute(CommandGatewayPack pack) {
