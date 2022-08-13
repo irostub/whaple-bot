@@ -1,51 +1,55 @@
 package com.irostub.telegramtapbot.bot.thirdparty.gps.kakao;
 
 import com.irostub.telegramtapbot.AppProperties;
+import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
-import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class GeoService {
-    private final RestTemplate restTemplate;
     private final AppProperties properties;
-    private final GeoHttpRequestFactory requestFactory;
 
-    public GeoResponse getGeo(String location) {
-        UriComponents uriComponents = UriComponentsBuilder
-                .fromUriString(properties.getKakao().getGeo().getUrl())
-                .queryParam("query", location).build(false);
+    private WebClient client;
 
-        return sendRequest(uriComponents);
+    @PostConstruct
+    public void init() {
+        HttpClient httpClient = HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+
+        client = WebClient.builder()
+                .baseUrl(properties.getKakao().getGeo().getBaseUrl())
+                .defaultHeader("Authorization", "KakaoAK " +
+                        properties.getKakao().getGeo().getToken())
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
     }
 
-    private GeoResponse sendRequest(UriComponents uriComponents) {
-        HttpEntity<?> entity = requestFactory.getHttpEntity();
-        ResponseEntity<GeoResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, entity, GeoResponse.class);
-
-        log.info("exchange: " + exchange.getBody());
-        if (exchange.getStatusCode().is2xxSuccessful()) {
-            return exchange.getBody();
-        }
-        return null;
+    public Mono<GeoResponse> getGeo(String location) {
+        return client.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(properties.getKakao().getGeo().getUrl())
+                        .queryParam("query", location)
+                        .build(false))
+                .retrieve()
+                .bodyToMono(GeoResponse.class);
     }
 
-    public GeoResponse getGeoKeyword(String location) {
-        UriComponents uriComponents = UriComponentsBuilder
-                .fromUriString(properties.getKakao().getGeo().getKeywordUrl())
-                .queryParam("query", location).build(false);
-
-        return sendRequest(uriComponents);
+    public Mono<GeoResponse> getGeoKeyword(String location) {
+        return client.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(properties.getKakao().getGeo().getKeywordUrl())
+                        .queryParam("query", location)
+                        .build(false))
+                .retrieve()
+                .bodyToMono(GeoResponse.class);
     }
 }

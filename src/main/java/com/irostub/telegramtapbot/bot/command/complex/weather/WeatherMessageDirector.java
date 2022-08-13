@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.Map;
 
 public class WeatherMessageDirector {
+
     public static SendMessage weatherMessage(CommandGatewayPack pack, Map<Category, FixedShortTermWeatherData> dataMap, String address) {
         FixedShortTermWeatherData temp = dataMap.get(Category.T1H);
         FixedShortTermWeatherData rain = dataMap.get(Category.RN1);

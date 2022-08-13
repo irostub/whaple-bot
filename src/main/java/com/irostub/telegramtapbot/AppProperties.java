@@ -73,6 +73,7 @@ public class AppProperties {
 
         @Data
         public static class Geo{
+            private String baseUrl;
             private String url;
             private String token;
             private String keywordUrl;
