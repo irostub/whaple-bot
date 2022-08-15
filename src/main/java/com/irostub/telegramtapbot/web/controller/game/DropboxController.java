@@ -9,4 +9,14 @@ public class DropboxController {
     public String game(){
         return "index";
     }
+
+    @GetMapping("/tailwind")
+    public String tailwind(){
+        return "tailwind";
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "myhtml";
+    }
 }
