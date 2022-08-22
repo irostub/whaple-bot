@@ -64,7 +64,7 @@ public class TapBot extends TelegramLongPollingBot {
                 isPureCommand(rawMessage) == false){
             return;
         }
-
+        log.info("[message] user = {}, message = {}", update.getMessage().getFrom().getId(), update.getMessage().getFrom());
         log.info("update = {}", update);
 
         User user = update.getMessage().getFrom();
