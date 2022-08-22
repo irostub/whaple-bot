@@ -30,15 +30,19 @@ public class PublicApiWeatherService {
 
         LocalDateTime now = LocalDateTime.now();
         String yyyy = now.format(DateTimeFormatter.ofPattern("yyyy"));
-        String mm = now.format(DateTimeFormatter.ofPattern("MM"));
+        String month = now.format(DateTimeFormatter.ofPattern("MM"));
         String dd = now.format(DateTimeFormatter.ofPattern("dd"));
-        int hour = now.getHour()-1;
+        int mm = now.getMinute();
+        int hour = now.getHour();
+        if (mm < 31) {
+            hour -= 1;
+        }
         if (hour == -1){
             hour = 23;
             LocalDateTime localDateTime = now.minusDays(-1L);
             dd = localDateTime.format(DateTimeFormatter.ofPattern("dd"));
         }
-        String baseDateFormatted = yyyy+mm+dd;
+        String baseDateFormatted = yyyy+month+dd;
         String baseTimeFormatted = String.format("%02d", hour)+"00";
 
         UriComponents uriComponents = UriComponentsBuilder
