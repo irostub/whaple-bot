@@ -12,7 +12,7 @@ public class RiverData {
     private LocalDateTime measureDateTime;
     private String Location;
     private Float temperature;
-    private Boolean inspection;
+    private boolean inspection;
 
     public RiverData(Map<String, Object> rowData) {
         String msrDateTime = String.valueOf(rowData.get("MSR_DATE")) + rowData.get("MSR_TIME");

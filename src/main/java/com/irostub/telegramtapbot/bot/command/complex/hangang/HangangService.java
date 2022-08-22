@@ -21,7 +21,7 @@ public class HangangService implements Commandable {
     public void execute(CommandGatewayPack pack) {
         RiverData riverData = publicApiHangangService.sendHangangRequest();
 
-        SendMessage sendMessage = riverData.getInspection() ?
+        SendMessage sendMessage = riverData.isInspection() ?
                 inspectionMessage(pack) : hangangMessage(pack, riverData);
 
         try {
